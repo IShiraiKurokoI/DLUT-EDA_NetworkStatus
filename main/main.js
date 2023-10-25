@@ -11,6 +11,7 @@ function createWindow () {
     },
     
   })
+
   mainWindow.loadFile('EDA.html')
 }
 app.whenReady().then(() => {

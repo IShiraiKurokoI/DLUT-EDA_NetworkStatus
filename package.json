@@ -11,10 +11,8 @@
   },
   "author": "Shirai_Kuroko",
   "license": "ISC",
-  "dependencies": {
-    "electron": "^27.0.2"
-  },
   "devDependencies": {
+    "electron": "^27.0.2",
     "electron-builder": "^24.6.4",
     "electron-icon-builder": "^2.0.1"
   },
@@ -25,6 +23,42 @@
     "directories": {
       "buildResources": "build",
       "output": "dist"
+    },
+    "win": {
+      "target": ["msi","nsis"],
+      "icon": "build/icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "language": "2052",
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "target": ["dmg", "zip"],
+      "category": "public.app-category.utilities"
+    },
+    "dmg": {
+      "background": "build/background.jfif",
+      "icon": "build/icons/icon.icns",
+      "iconSize": 100,
+      "contents": [
+        {
+          "x": 380,
+          "y": 180,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 180,
+          "type": "file"
+        }
+      ],
+      "window": {
+        "width": 540,
+        "height": 380
+      }
     }
   }
 }
