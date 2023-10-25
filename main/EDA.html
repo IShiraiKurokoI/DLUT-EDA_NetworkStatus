@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>本机校园网状态</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h2 {
+            margin: 20px;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            user-select: none;
+        }
+        #ipAddress{
+            user-select: all;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>本机校园网状态</h2>
+    <table>
+        <tr>
+            <th>在线状态</th>
+            <td id="onlineStatus">-</td>
+        </tr>
+        <tr>
+            <th>账号</th>
+            <td id="account">-</td>
+        </tr>
+        <tr>
+            <th>姓名</th>
+            <td id="name">-</td>
+        </tr>
+        <tr>
+            <th>IP地址</th>
+            <td id="ipAddress">-</td>
+        </tr>
+        <tr>
+            <th>MAC地址</th>
+            <td id="macAddress">-</td>
+        </tr>
+        <tr>
+            <th>已用流量</th>
+            <td id="usedFlow">-</td>
+        </tr>
+        <tr>
+            <th>剩余流量</th>
+            <td id="remainingFlow">-</td>
+        </tr>
+        <tr>
+            <th>上线时间</th>
+            <td id="loginTime">-</td>
+        </tr>
+    </table>
+
+    <button id="loginBtn">跳转登录</button>
+    <button id="logoutBtn">一键注销</button>
+	<br/>
+    <button id="selfServiceBtn">自助服务</button>
+    <button id="refreshBtn">刷新数据</button>
+
+    <script src="./jquery-3.6.0.min.js"></script>
+    <script>
+        // Function to format bytes into a more human-readable format
+        function formatBytes(bytes) {
+            const kb = 1024;
+            const units = ['KB', 'MB', 'GB', 'TB'];
+            let i = 0;
+            while (bytes > kb) {
+                bytes /= kb;
+                i++;
+            }
+            return bytes.toFixed(2) + ' ' + units[i];
+        }
+
+        // Function to update the table with data
+        function updateTable(data) {
+            $('#onlineStatus').text(data.result === 1 ? '在线' : '离线');
+            $('#account').text(data.uid);
+            $('#name').text(data.NID);
+            $('#ipAddress').text(data.v4ip);
+            $('#macAddress').text(data.olmac.split(':').join('; '));
+            $('#usedFlow').text(formatBytes(data.flow));
+            $('#remainingFlow').text(formatBytes(data.olflow));
+            $('#loginTime').text(data.etime);
+        }
+
+        // Function to clean the table
+        function cleanTable() {
+            $('#onlineStatus').text('-');
+            $('#account').text('-');
+            $('#name').text('-');
+            $('#ipAddress').text('-');
+            $('#macAddress').text('-');
+            $('#usedFlow').text('-');
+            $('#remainingFlow').text('-');
+            $('#loginTime').text('-');
+        }
+
+        function loadData() {
+            $.get('http://172.20.30.1/drcom/chkstatus?callback=', function (data) {
+                cleanTable();
+                data = "{" + data.split("({")[1].split("})")[0] + "}";
+                data = JSON.parse(data);
+                updateTable(data);
+            });
+        }
+
+        // Login button click event
+        $('#loginBtn').click(function () {
+            $.get('http://172.20.30.1/drcom/chkstatus?callback=', function (data) {
+                data = "{" + data.split("({")[1].split("})")[0] + "}";
+                data = JSON.parse(data);
+                const v4ip = data.v4ip;
+                const loginUrl = `https://sso.dlut.edu.cn/cas/login?service=http%3A%2F%2F172.20.30.2%3A8080%2FSelf%2Fsso_login%3Fwlan_user_ip%3D${v4ip}%26authex_enable%3D%26type%3D1`;
+                window.open(loginUrl, '_blank');
+            });
+        });
+
+        // Self Service button click event
+        $('#selfServiceBtn').click(function () {
+            // Replace with the URL for self-service
+            const selfServiceUrl = 'https://sso.dlut.edu.cn/cas/login?service=http%3A%2F%2F172.20.30.2%3A8080%2FSelf%2Fsso_login';
+            window.open(selfServiceUrl, '_blank');
+        });
+
+		// Logout button click event
+		$('#logoutBtn').click(function () {
+			$.ajax({
+				url: 'http://172.20.30.1:801/eportal/portal/logout',
+				type: 'GET',
+				success: function (response) {
+					//跨源就不可能成功
+					if (response.includes('"result":1')) {
+						alert('注销成功');
+					}
+				},
+				error: function (xhr, status, error) {
+					loadData();
+				}
+			});
+		});
+
+
+        // Refresh button click event
+        $('#refreshBtn').click(function () {
+            loadData();
+			
+        });
+
+        loadData();
+    </script>
+</body>
+</html>
