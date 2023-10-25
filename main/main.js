@@ -7,12 +7,12 @@ function createWindow () {
     height: 600,
     icon: path.join(__dirname, 'icon.ico'),
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    },
-    
+      preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false
+    }
   })
 
-  mainWindow.loadFile('EDA.html')
+  mainWindow.loadFile(path.join(__dirname, 'EDA.html'))
 }
 app.whenReady().then(() => {
   createWindow()
