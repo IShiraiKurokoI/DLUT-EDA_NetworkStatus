@@ -167,12 +167,13 @@
 				url: 'http://172.20.30.1:801/eportal/portal/logout',
 				type: 'GET',
 				success: function (response) {
-					//跨源就不可能成功
 					if (response.includes('"result":1')) {
 						alert('注销成功');
+                        loadData();
 					}
 				},
 				error: function (xhr, status, error) {
+                    alert('注销失败');
 					loadData();
 				}
 			});
@@ -182,7 +183,6 @@
         // Refresh button click event
         $('#refreshBtn').click(function () {
             loadData();
-			
         });
 
         loadData();
