@@ -9,7 +9,10 @@
     "build-icon": "electron-icon-builder --input=./icon.png --output=build --flatten",
     "pack": "electron-builder"
   },
-  "author": "Shirai_Kuroko",
+  "author": {
+    "name": "Shirai_Kuroko",
+    "email":"ishirai_kurokoi@foxmail.com"
+  },
   "license": "ISC",
   "devDependencies": {
     "electron": "^27.0.2",
