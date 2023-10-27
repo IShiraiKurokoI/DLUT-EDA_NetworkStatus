@@ -1,0 +1,53 @@
+name: Build and Release Electron App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Build Electron App
+      run: npm run build
+
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./dist/*.msi
+          ./dist/*.exe
+          ./dist/*.rpm
+          ./dist/*.deb
+          ./dist/*.pkg
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Publish Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./dist/*.msi
+          ./dist/*.exe
+          ./dist/*.rpm
+          ./dist/*.deb
+          ./dist/*.pkg
+        token: ${{ secrets.GITHUB_TOKEN }}
+        release_id: ${{ steps.create_release.outputs.id }}
