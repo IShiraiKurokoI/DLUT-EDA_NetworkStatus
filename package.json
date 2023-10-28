@@ -1,6 +1,6 @@
 {
   "name": "dlut-eda_networkstatus",
-  "version": "v1.1.0",
+  "version": "1.1.0",
   "description": "DLUT-EDA校园网面板",
   "main": ".//main//main.js",
   "scripts": {
