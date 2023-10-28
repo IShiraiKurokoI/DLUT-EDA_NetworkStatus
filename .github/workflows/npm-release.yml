@@ -17,9 +17,6 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Set Manual Tag as Environment Variable
-      run: echo "TAG=1.1.0" >> $GITHUB_ENV
-
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
@@ -31,9 +28,9 @@ jobs:
     - name: Build Electron App
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        TAG: ${{ TAG }}
+        TAG: "1.1.0"
       run: |
-        TAG="$TAG"
+        TAG="1.1.0"
         npm run pack
 
     - name: Create Release
