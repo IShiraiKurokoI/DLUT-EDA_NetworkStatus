@@ -2,8 +2,8 @@ name: Build and Release Electron App
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - '*'
 
 permissions:
   contents: write
@@ -45,5 +45,5 @@ jobs:
           ./dist/*.deb
           ./dist/*.dmg
           ./dist/*.zip
-        tag_name: "1.1.0"
+        tag_name: "1.2.0"
         token: ${{ secrets.GITHUB_TOKEN }}
