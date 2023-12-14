@@ -115,7 +115,12 @@
             $('#onlineStatus').text(data.result === 1 ? '在线' : '离线');
             $('#account').text(data.uid);
             $('#name').text(data.NID);
-            $('#ipAddress').text(data.v4ip);
+            if (data.v4ip){
+                $('#ipAddress').text(data.v4ip);
+            }else {
+                $('#ipAddress').text(data.v46ip);
+            }
+            if (data.result !== 1) return;
             $('#macAddress').text(data.olmac.split(':').join('; '));
             $('#usedFlow').text(formatBytes(data.flow));
             $('#remainingFlow').text(formatBytes(data.olflow));
@@ -150,6 +155,7 @@
                 data = JSON.parse(data);
                 const v4ip = data.v4ip;
                 const loginUrl = `https://sso.dlut.edu.cn/cas/login?service=http%3A%2F%2F172.20.30.2%3A8080%2FSelf%2Fsso_login%3Fwlan_user_ip%3D${v4ip}%26authex_enable%3D%26type%3D1`;
+                console.log(loginUrl)
                 window.open(loginUrl, '_blank');
             });
         });
