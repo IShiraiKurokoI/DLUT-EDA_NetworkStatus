@@ -153,10 +153,15 @@
             $.get('http://172.20.30.1/drcom/chkstatus?callback=', function (data) {
                 data = "{" + data.split("({")[1].split("})")[0] + "}";
                 data = JSON.parse(data);
-                const v4ip = data.v4ip;
-                const loginUrl = `https://sso.dlut.edu.cn/cas/login?service=http%3A%2F%2F172.20.30.2%3A8080%2FSelf%2Fsso_login%3Fwlan_user_ip%3D${v4ip}%26authex_enable%3D%26type%3D1`;
+                let v4ip = data.v4ip;
+                let loginUrl = `https://sso.dlut.edu.cn/cas/login?service=http%3A%2F%2F172.20.30.2%3A8080%2FSelf%2Fsso_login%3Fwlan_user_ip%3D${v4ip}%26authex_enable%3D%26type%3D1`;
+                //补救v4ip获取失败的情况
+                if (!v4ip){
+                    let v46ip = data.v46ip;
+                    loginUrl = `https://sso.dlut.edu.cn/cas/login?service=http%3A%2F%2F172.20.30.2%3A8080%2FSelf%2Fsso_login%3Fwlan_user_ip%3D${v46ip}%26authex_enable%3D%26type%3D1`;
+                }
                 console.log(loginUrl)
-                window.open(loginUrl, '_blank');
+                electronApi.openLoginWindow(loginUrl);
             });
         });
 
@@ -164,7 +169,7 @@
         $('#selfServiceBtn').click(function () {
             // Replace with the URL for self-service
             const selfServiceUrl = 'https://sso.dlut.edu.cn/cas/login?service=http%3A%2F%2F172.20.30.2%3A8080%2FSelf%2Fsso_login';
-            window.open(selfServiceUrl, '_blank');
+            electronApi.openWindow(selfServiceUrl);
         });
 
 		// Logout button click event
