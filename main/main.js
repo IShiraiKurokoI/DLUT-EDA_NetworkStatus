@@ -1,6 +1,10 @@
 const { app, BrowserWindow, Menu, clipboard, Notification, ipcMain} = require('electron')
 const path = require('path')
 
+if (process.platform === 'win32') {
+  app.setAppUserModelId("DLUT-EDA-NetworkStatus");
+}
+
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 500,
